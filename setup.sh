@@ -26,5 +26,3 @@ npm ci
 
 mkdir config
 cp data/default_config.json config/config.json
-
-ln -s ../ygopro .
