@@ -1,7 +1,7 @@
 {
   "file": "./config/config.json",
-  "port": 7911,
-  "version": 4945,
+  "port": 3344,
+  "version": 4947,
   "alternative_versions": [],
   "hostinfo": {
     "lflist": 0,
