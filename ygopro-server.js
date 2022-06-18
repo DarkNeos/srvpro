@@ -82,6 +82,9 @@
 
   Q = require("q");
 
+  // 日志前缀
+  logPrefix = "[LogInfo]";
+
   //heapdump = require 'heapdump'
   checkFileExists = async(path) => {
     var e;
@@ -264,6 +267,7 @@
   }).call(this);
 
   loadLFList = async function(path) {
+    log.info(logPrefix, "loadLFList");
     var date, j, len, list, ref, results;
     try {
       ref = ((await fs.promises.readFile(path, 'utf8'))).match(/!.*/g);
@@ -286,8 +290,9 @@
   };
 
   init = async function() {
+    log.info(logPrefix, "init");
     var AthleticChecker, Challonge, DataManager, chat_color, config, cppversion, defaultConfig, default_data, dirPath, dns, e, get_rooms_count, http_server, https, https_server, imported, j, l, len, len1, mkdirList, options, pgClient, pg_client, pg_query, plugin_filename, plugin_list, plugin_path, postData;
-    log.info('Reading config.');
+    log.info(logPrefix, 'Reading config.');
     await createDirectoryIfNotExists("./config");
     await importOldConfig();
     defaultConfig = (await loadJSONAsync('./data/default_config.json'));
@@ -430,7 +435,7 @@
       }
     }
     // 读取数据
-    log.info('Loading data.');
+    log.info(logPrefix, 'Loading data.');
     default_data = (await loadJSONAsync('./data/default_data.json'));
     try {
       tips = global.tips = (await loadJSONAsync('./config/tips.json'));
@@ -464,16 +469,16 @@
       }
     }
     try {
-      log.info("Reading YGOPro version.");
+      // log.info(logPrefix, "Reading YGOPro version.");
       cppversion = parseInt(((await fs.promises.readFile('ygopro/gframe/game.cpp', 'utf8'))).match(/PRO_VERSION = ([x\dABCDEF]+)/)[1], '16');
       await setting_change(settings, "version", cppversion);
-      log.info("ygopro version 0x" + settings.version.toString(16), "(from source code)");
+      log.info(logPrefix, "ygopro version 0x" + settings.version.toString(16), "(from source code)");
     } catch (error1) {
       //settings.version = settings.version_default
-      log.info("ygopro version 0x" + settings.version.toString(16), "(from config)");
+      log.info(logPrefix, "ygopro version 0x" + settings.version.toString(16), "(from config)");
     }
     // load the lflist of current date
-    log.info("Reading banlists.");
+    log.info(logPrefix, "Reading banlists.");
     await loadLFList('ygopro/expansions/lflist.conf');
     await loadLFList('ygopro/lflist.conf');
     badwordR = global.badwordR = {};
@@ -504,13 +509,14 @@
       setTimeout(get_rooms_count, 1000);
     }
     if (settings.modules.windbot.enabled) {
-      log.info("Reading bot list.");
+      log.info(logPrefix, "Reading bot list.");
       windbots = global.windbots = ((await loadJSONAsync(settings.modules.windbot.botlist))).windbots;
       real_windbot_server_ip = global.real_windbot_server_ip = settings.modules.windbot.server_ip;
       if (!settings.modules.windbot.server_ip.includes("127.0.0.1")) {
         dns = require('dns');
         real_windbot_server_ip = global.real_windbot_server_ip = (await util.promisify(dns.lookup)(settings.modules.windbot.server_ip));
       }
+      log.info(logPrefix, "windbot server ip: ", real_windbot_server_ip);
     }
     if (settings.modules.heartbeat_detection.enabled) {
       long_resolve_cards = global.long_resolve_cards = (await loadJSONAsync('./data/long_resolve_cards.json'));
@@ -714,12 +720,12 @@
       }
       return results;
     }, 1000);
-    log.info("Starting server.");
+    // log.info(logPrefix, "Starting server.");
     net.createServer(netRequestHandler).listen(settings.port, function() {
-      log.info("server started", settings.port);
+      log.info(logPrefix, "server started", settings.port);
     });
     if (settings.modules.stop) {
-      log.info("NOTE: server not open due to config, ", settings.modules.stop);
+      log.info(logPrefix, "NOTE: server not open due to config, ", settings.modules.stop);
     }
     http_server = http.createServer(httpRequestListener);
     http_server.listen(settings.modules.http.port);
@@ -745,7 +751,7 @@
       plugin_filename = plugin_list[l];
       plugin_path = process.cwd() + "/plugins/" + plugin_filename;
       require(plugin_path);
-      log.info("Plugin loaded:", plugin_filename);
+      log.info(logPrefix, "Plugin loaded:", plugin_filename);
     }
   };
 
@@ -1708,6 +1714,7 @@
         });
         this.process.stdout.setEncoding('utf8');
         this.process.stdout.once('data', (data) => {
+          log.info(logPrefix, "spawn ygopro data:", data);
           this.established = true;
           if (!this.windbot && settings.modules.http.websocket_roomlist) {
             roomlist.create(this);
@@ -1734,7 +1741,7 @@
         return this.process.stderr.on('data', (data) => {
           data = "Debug: " + data;
           data = data.replace(/\n$/, "");
-          log.info("YGOPRO " + data);
+          log.info(logPrefix, "YGOPRO " + data);
           ygopro.stoc_send_chat_to_room(this, data, ygopro.constants.COLORS.RED);
           this.has_ygopro_error = true;
           this.ygopro_error_length = this.ygopro_error_length ? this.ygopro_error_length + data.length : data.length;
