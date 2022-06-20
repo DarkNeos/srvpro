@@ -1733,7 +1733,12 @@
             });
           });
           this.process.stdout.on('data', (data) => {
-            log.info(logPrefix, data);
+            var lines = data.split('\n');
+            for (const line of lines) {
+              if(line.length >= 2) {
+                log.info(logPrefix, line);
+              }
+            }
           });
           if (this.windbot) {
             setTimeout(() => {
