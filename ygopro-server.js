@@ -1732,6 +1732,9 @@
               player.pre_establish_buffers = [];
             });
           });
+          this.process.stdout.on('data', (data) => {
+            log.info(logPrefix, data);
+          });
           if (this.windbot) {
             setTimeout(() => {
               return this.add_windbot(this.windbot);
