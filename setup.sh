@@ -6,13 +6,9 @@ cd ygopro
 
 git submodule update --init --recursive
 
-cp ../premake5 ./
+wget https://www.lua.org/ftp/lua-5.4.3.tar.gz && tar xf lua-5.4.3.tar.gz && mv lua-5.4.3 lua && cp premake/lua/* lua/
 
-wget -O - https://www.lua.org/ftp/lua-5.3.6.tar.gz | tar zfx -; cd lua-5.3.6; sudo make linux install; cd ..
-mv lua-5.3.6 lua
-cp ./premake/lua/premake5.lua ./lua
-
-./premake5 gmake
+premake5 gmake --cc=clang --mac-arm
 cd build
 make config=release
 cd ..
