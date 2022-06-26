@@ -1714,7 +1714,7 @@
         });
         this.process.stdout.setEncoding('utf8');
         this.process.stdout.once('data', (data) => {
-          log.info(logPrefix, "spawn ygopro data:", data);
+          log.info(logPrefix, "ygopro port:", data);
           this.established = true;
           if (!this.windbot && settings.modules.http.websocket_roomlist) {
             roomlist.create(this);
@@ -1732,14 +1732,14 @@
               player.pre_establish_buffers = [];
             });
           });
-          this.process.stdout.on('data', (data) => {
-            var lines = data.split('\n');
-            for (const line of lines) {
-              if(line.length >= 2) {
-                log.info(logPrefix, line);
-              }
-            }
-          });
+          // this.process.stdout.on('data', (data) => {
+          //   var lines = data.split('\n');
+          //   for (const line of lines) {
+          //     if(line.length >= 2) {
+          //       log.info(logPrefix, 'process data:', line);
+          //     }
+          //   }
+          // });
           if (this.windbot) {
             setTimeout(() => {
               return this.add_windbot(this.windbot);
@@ -2570,6 +2570,8 @@
     });
     // 服务端到客户端(stoc)
     server.on('data', async function(stoc_buffer) {
+      log.info(logPrefix, 'stoc_buffer:', stoc_buffer);
+
       var buffer, handle_data, j, len, ref;
       handle_data = (await ygopro.helper.handleBuffer(stoc_buffer, "STOC", null, {
         client: server.client,
