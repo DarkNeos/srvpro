@@ -1,4 +1,4 @@
 [submodule "ygopro"]
 	path = ygopro
-	url = https://github.com/mycard/ygopro
-	branch = server
+	url = https://github.com/SKTT1Ryze/ygopro
+	branch = mac
