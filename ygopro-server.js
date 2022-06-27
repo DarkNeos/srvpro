@@ -2570,7 +2570,7 @@
     });
     // 服务端到客户端(stoc)
     server.on('data', async function(stoc_buffer) {
-      log.info(logPrefix, 'stoc_buffer:', stoc_buffer);
+      // log.info(logPrefix, 'stoc_buffer:', stoc_buffer);
 
       var buffer, handle_data, j, len, ref;
       handle_data = (await ygopro.helper.handleBuffer(stoc_buffer, "STOC", null, {

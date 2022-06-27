@@ -225,7 +225,7 @@ class YGOProMessagesHelper {
                         break;
                     }
                     let buffer = messageBuffer.slice(3, 2 + messageLength);
-                    //console.log(l, direction, proto, cancel);
+					          console.log('LogInfo', l, direction, proto, cancel);
                     for (let priority = 0; priority < 4; ++priority) {
                         if (cancel) {
                             break;
